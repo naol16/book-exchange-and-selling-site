@@ -6,17 +6,20 @@ const BookSchema=mongoose.Schema(
         name:String,
         image:String,
         cost:String,
-        transferbook:String
+        transferbook:String,
+        genera:String
+
     }
 )
 const UserSchema= mongoose.Schema(
   { name:String,
     username:String,
     email:String,
+    password:String,
     books:[BookSchema]
 
   }
 
 )
-const usermodel=UserSchema.createmodel("user",UserSchema)
-module.exports=usermodel
+const  User=UserSchema.model("User",UserSchema)
+module.exports=User
