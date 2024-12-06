@@ -2,10 +2,12 @@ const express= require('express')
 const dotenv= require('dotenv')
 const mongoose=require("mongoose")
 const port =process.env.port ||3421
+const user=require('./routes/user')
 const app =new express()
 //mongodb+srv://lemesanaol93:onlinedatabase@cluster0.thhz3.mongodb.net/
 dotenv.config();
 app.use(express.json())
+app.use('/user',user)
 const connection= async()=>{
     try{
         await mongoose.connect(
