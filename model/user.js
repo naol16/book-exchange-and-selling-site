@@ -17,8 +17,7 @@ const UserSchema= mongoose.Schema(
     email:String,
     password:String,
     books:[BookSchema]
-
-  }
+}
 
 )
 const  User=mongoose.model("User",UserSchema)

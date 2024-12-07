@@ -16,6 +16,14 @@ function passwordvalidation(password){
     
 
 }
+function id(object){
+    if (object){
+        return res.status(200).json({id:object})
+    }
+    else{
+        return res.status(409).json({unauthorized:'unauthorized user'})
+    }
+}
 async function signup(req,res){
     const{name,username,email,password}=req.body;
     if (!name || typeof name !== 'string' || !username || typeof username !== 'string' ||  !email || typeof email !== 'string' || !emailvalidation(email) || !passwordvalidation(password)){
@@ -50,11 +58,18 @@ async function signin(req,res){
 }
 try{
     const hashed= await bcrypt.hash(password,saltround);
-    const answer = await User.find({email:email,password:hashed})
-    if(!answer){
-       return  res.status(401).send("unaouthorized: invalid email or password")
+    const answer = await User.find({ email:email })
+    if(answer.length<1){
+        console.log(answer)
+       return  res.status(401).send("user does not exist")
     }
-    res.status(200).JSON(welcome,answer[0].name)
+    const bcryptvalue= await bcrypt.compare(password,answer[0].password)
+    if (!bcryptvalue){
+        return res.status(401).json({message:'incorrect password'})
+    }
+    const objectid=answer[0]._id;
+    
+    return res.status(200).json({welcome:answer[0].name,userId:objectid})
 }
 
 catch(error){
