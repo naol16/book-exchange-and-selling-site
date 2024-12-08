@@ -1,7 +1,7 @@
 const express= require('express')
 const dotenv= require('dotenv')
 const mongoose=require("mongoose")
-const port =process.env.port ||3421
+const port =process.env.port ||5432
 const user=require('./routes/user')
 const books=require('./routes/books')
 const app =new express()
@@ -9,7 +9,7 @@ const app =new express()
 dotenv.config();
 app.use(express.json())
 app.use('/user',user)
-app.use('/book/:id',books)
+app.use('/book',books)
 const connection= async()=>{
     try{
         await mongoose.connect(
