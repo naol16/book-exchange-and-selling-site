@@ -2,29 +2,33 @@ const{User,Books}=require("../model/user");
 const mongoose=require("mongoose")
 
 async function updating(req,res){
-    const userid= req.params.id
-    const bookid=req.params.id
+    const userid=req.params.id;
+    const bookid=req.params.bookid;
     const {name,image, cost, transferbook,genera}=req.body
     try{
+    console.log(userid)
+    console.log(bookid)
     const user= await User.findById(userid)
     console.log(user)
-    const books=user.books
+    let books=user.books
     for (let i=0; i<books.length;i++){
         if(books[i]._id.toString()==bookid){
-            const books= await Books.findById(bookid);
-           await books.set({
+        const book= await Books.findById(bookid);
+        console.log(book);
+           await book.set({
                 name:name,
                 image:image,
                 cost:cost,
-                transferdbook:transferbook,
+                transferbook:transferbook,
                 genera:genera})
+            const newbook = await book.save();
+            books[i]=newbook
+            console.log(newbook)
         }
-        books[i]=newbook
-         const newbook=books.save();
          }
     user.books=books
    const  newuser = await user.save()
-    res.status(201).json({messge:'updated successfully',newuser:newuser,newbook:newbook})
+    res.status(201).json({messge:'updated successfully',newuser:newuser})
 // here we can use filter find the  element which matchs with our choice 
 
 }
@@ -43,21 +47,19 @@ console.log(bookid);
 try{
 const user = await User.findById(userid);
 const books=user.books;
+console.log(books)
 // used filter function to find an element and deleted the element,
 user.books=user.books.filter(function checker (book){
     console.log(book._id)
-    return book._id!==bookid})
+    return book._id.toString()!==bookid})
 // here deleting the book from the  Books
-const deletedobject={};
-for(let i=0; i<books.length;i++){
-  if(books._id===bookid){
-     deletedobject= await Books.findByIdAndRemove(bookid) 
-     console.log(deletedobject);
-    }
-}
-const newuser = user.save()
+const deleteobject = await Books.findByIdAndDelete(bookid);
+//findByIdAndRemove
+console.log(deleteobject);
+
+const newuser = await user.save()
 console.log(newuser);
-res.status(200).send({message:`we deleted ${deletedobject}`})
+res.status(200).send({message:`we deleted ${deleteobject}`})
 
 }
 catch(error){
@@ -70,7 +72,8 @@ async function listofuserbook(req,res){
     const user= await User.findById(userid);
     const books=user.books
     // here the book wil contain the id 
-    res.status(200).json({books:books})
+    res.status(200).json({books:books});
+    
 
     }
     catch(error){
