@@ -4,11 +4,14 @@ const mongoose=require("mongoose")
 const BookSchema=mongoose.Schema(
     {
         name:String,
-        image:String,
+        image:{
+            data:Buffer,
+            contentType:String
+
+        },
         cost:String,
         transferbook:String,
         genera:String
-
     }
 )
 const UserSchema= mongoose.Schema(
